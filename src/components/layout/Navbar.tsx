@@ -1,31 +1,47 @@
 import React, { useState } from 'react';
+import { Menu, Bell, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { RootState } from '../../store';
+import { Link } from 'react-router-dom';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+    toggleMobileMenu: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ toggleMobileMenu }) => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const user = useSelector((state: RootState) => state.auth.user);
 
     return (
-        <nav className="bg-white shadow-lg">
-            <div className="max-w-7xl mx-auto px-4">
-                <div className="flex justify-between h-16">
-                    <div className="flex">
-                        <div className="flex-shrink-0 flex items-center">
-                            <img className="h-8 w-8" src="/logo.svg" alt="Logo" />
+        <nav className="bg-white shadow-md">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    <div className="flex items-center">
+                        <button
+                            className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                            onClick={toggleMobileMenu}
+                        >
+                            <Menu className="h-6 w-6" aria-hidden="true" />
+                        </button>
+                        <div className="hidden md:block">
+                            <div className="ml-10 flex items-baseline space-x-4">
+                                {/* Add any additional navbar items here */}
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center">
+                        <button className="p-2 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <Bell className="h-6 w-6" aria-hidden="true" />
+                        </button>
                         <div className="ml-3 relative">
                             <div>
-                                <button
-                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-                                >
-                                    <img className="h-8 w-8 rounded-full" src={user?.avatar || '/default-avatar.png'} alt="User avatar" />
+                                <button onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                 className="flex items-center max-w-xs bg-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu" aria-haspopup="true">
+                                    <span className="sr-only">Open user menu</span>
+                                    <User className="h-8 w-8 rounded-full" />
                                 </button>
                             </div>
+                            {/* Add user dropdown menu here if needed */}
                             {isProfileOpen && (
                                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                                     <div className="py-1 rounded-md bg-white shadow-xs">

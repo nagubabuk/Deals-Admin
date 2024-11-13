@@ -21,15 +21,23 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
+import { setUser } from '../store/slices/authSlice';
 
 interface ProtectedRouteProps {
     children: React.ReactElement; // Expecting child components to render within ProtectedRoute
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { user } = useAuth();
+const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
+    const dispatch = useDispatch<AppDispatch>();
 
-    return user ? children : <Navigate to="/login" replace />;
+    const storedUser = localStorage.getItem('user');
+    console.log("Prodte storedUser",storedUser)
+    if (storedUser) {
+        dispatch(setUser(JSON.parse(storedUser)));
+    }
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+    return isAuthenticated ? element : <Navigate to="/login" />;
 };
-
 export default ProtectedRoute;

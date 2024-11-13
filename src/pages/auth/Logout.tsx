@@ -2,14 +2,19 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Loader } from 'lucide-react';
+import { AppDispatch } from '../../store';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/slices/authSlice';
 
 const Logout: React.FC = () => {
-    const { logout } = useAuth();
+    // const { logout } = useAuth();
+    const dispatch = useDispatch<AppDispatch>();
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const performLogout = async () => {
-            await logout();
+            await dispatch(logout());
             navigate('/login');
         };
 

@@ -85,7 +85,7 @@ const SalesDashboard: React.FC = () => {
     return (
         <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-2xl font-semibold mb-4 text-primary-700">Sales Dashboard</h2>
-            {user && <p className="mb-4 text-primary-600">Welcome, {user.name}!</p>}
+            {user && <p className="mb-4 text-primary-600">Welcome, {user.username}!</p>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2 text-primary-600">Sales by Product</h3>

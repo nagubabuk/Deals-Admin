@@ -27,7 +27,7 @@ export const fetchSalesData = () => async (dispatch: AppDispatch) => {
 
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api', // This can be any URL since we're intercepting
+    baseURL: 'http://localhost:5000/api', // This can be any URL since we're intercepting
 });
 
 // Request interceptor
