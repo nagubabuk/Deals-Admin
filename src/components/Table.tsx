@@ -15,6 +15,7 @@ interface TableProps<T> {
 }
 
 export function Table<T>({ data, columns, onRowClick, showActionIcon = true }: TableProps<T>) {
+    console.log("dat is", data)
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">

@@ -388,6 +388,8 @@ import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { X, Upload, Tag, Percent, DollarSign, Calendar, FileText, ShoppingCart } from 'lucide-react';
+import { dealsApi } from '../../services/dealsApi';
+
 
 interface DealFormValues {
     category: string;
@@ -459,11 +461,37 @@ const DealCreation: React.FC = () => {
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
-            console.log(values);
-            console.log('Images:', images);
-            console.log('Video:', video);
-            console.log('Primary Image Index:', primaryImageIndex);
-            navigate('/deals');
+            const formData = new FormData();
+
+            // Append text fields
+            Object.keys(values).forEach(key => {
+                if (values[key as keyof DealFormValues] !== null) {
+                    formData.append(key, values[key as keyof DealFormValues]?.toString() || '');
+                }
+            });
+
+            // Append images
+            images.forEach((image, index) => {
+                formData.append(`files`, image);
+            });
+
+            // Append primary image index
+            // if (primaryImageIndex !== null) {
+            //     formData.append('primaryImageIndex', primaryImageIndex.toString());
+            // }
+
+            // Append video
+            if (video) {
+                formData.append('files', video);
+            }
+            try {
+                const response = await dealsApi.createDeal(formData);
+                console.log('Deal created successfully:', response.data);
+                navigate('/deals');
+            } catch (error) {
+                console.error('Error creating deal:', error);
+                // Handle error (e.g., show error message to user)
+            }
         },
     });
 
@@ -504,7 +532,9 @@ const DealCreation: React.FC = () => {
     const setPrimaryImage = (index: number) => {
         setPrimaryImageIndex(index);
     };
-
+const calling =()=>{
+alert("hello")
+}
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Create New Deal</h1>
@@ -780,13 +810,13 @@ const DealCreation: React.FC = () => {
                 )}
 
                 <div className="flex justify-end space-x-4">
-                    <button
+                    {/* <button
                         type="button"
                         onClick={() => navigate('/deals')}
                         className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
                     >
                         Cancel
-                    </button>
+                    </button> */}
                     <button
                         type="submit"
                         className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"

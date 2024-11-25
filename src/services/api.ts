@@ -27,30 +27,54 @@ export const fetchSalesData = () => async (dispatch: AppDispatch) => {
 
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // This can be any URL since we're intercepting
+    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 // Request interceptor
-api.interceptors.request.use((config) => {
-    // You can modify the request config here (e.g., add headers)
-    return config;
-});
-
-// Response interceptor
-api.interceptors.response.use(
-    (response) => {
-        // This is for successful responses
-        return response;
+api.interceptors.request.use(
+    (config) => {
+        // You can add authentication headers here if needed
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
     },
     (error) => {
-        // This is for errors
-        const { config, response } = error;
+        return Promise.reject(error);
+    }
+);
 
-        if (response && response.status === 404) {
-            // Handle 404 errors (endpoint not found)
-            return handleMockResponse(config);
+
+// Response interceptor
+// api.interceptors.response.use(
+//     (response) => {
+//         // This is for successful responses
+//         return response;
+//     },
+//     (error) => {
+//         // This is for errors
+//         const { config, response } = error;
+
+//         if (response && response.status === 404) {
+//             // Handle 404 errors (endpoint not found)
+//             return handleMockResponse(config);
+//         }
+
+//         return Promise.reject(error);
+//     }
+// );
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        // Handle global error responses here
+        if (error.response && error.response.status === 401) {
+            // Redirect to login page or refresh token
         }
-
         return Promise.reject(error);
     }
 );
