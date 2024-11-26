@@ -254,7 +254,7 @@ const DealList: React.FC = () => {
   ];
 
   const handleRowClick = (deal: Deal) => {
-    navigate(`/deals/${deal._id}`, { state: { deal }});
+    navigate(`/deals/view/${deal._id}`, { state: { deal }});
   };
 
   const handleCreateDeal = () => {

@@ -14,13 +14,13 @@ export interface DealFormData {
     dealPrice: number;
 }
 
-export interface DealResponse {
-    id: string;
-    // Add other fields that the API returns
-}
+// export interface DealResponse {
+//     id: string;
+//     // Add other fields that the API returns
+// }
 
 export const dealsApi = {
-    createDeal: (formData: FormData): Promise<AxiosResponse<DealResponse>> => {
+    createDeal: (formData: FormData): Promise<AxiosResponse<any>> => {
         return api.post('/deals/create', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -29,11 +29,11 @@ export const dealsApi = {
     },
 
     // Add other deal-related API calls here, such as:
-    getDeal: (id: string): Promise<AxiosResponse<DealResponse>> => {
+    getDeal: (id: string): Promise<AxiosResponse<any>> => {
         return api.get(`/deals/${id}`);
     },
 
-    updateDeal: (id: string, formData: FormData): Promise<AxiosResponse<DealResponse>> => {
+    updateDeal: (id: string, formData: FormData): Promise<AxiosResponse<any>> => {
         return api.put(`/deals/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',

@@ -233,13 +233,13 @@ const Sidebar: React.FC<{ isMobileMenuOpen: boolean; toggleMobileMenu: () => voi
                 >
                     {item.path ? (
                         <Link to={item.path} className="flex items-center w-full" onClick={() => toggleMobileMenu()}>
-                            <item.icon className="mr-2" size={18} />
+                            {/* <item.icon className="mr-2" size={18} /> */}
                             <span>{item.name}</span>
                         </Link>
                     ) : (
                         <>
                             <span className="flex items-center">
-                                <item.icon className="mr-2" size={18} />
+                                {/* <item.icon className="mr-2" size={18} /> */}
                                 <span>{item.name}</span>
                             </span>
                             {item.subItems && (

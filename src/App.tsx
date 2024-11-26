@@ -57,33 +57,10 @@ import { checkAuthStatus } from './store/slices/authSlice';
 import Deals from './pages/deals/DealsList';
 import DealsOverView from './pages/deals/DealsOverView';
 import DealCreation from './pages/deals/DealCreation';
-// import Customers from './pages/Customers';
-// import Orders from './pages/Orders';
-// import Settings from './pages/Settings';
+import DealView from './pages/deals/ViewDeal';
+import PageNotFound from './components/PageNotFound';
+import DealEdit from './pages/deals/DealEdit';
 
-// const router = createBrowserRouter([
-//   {
-//     path: '/',
-//     element: (
-//       <AuthProvider>
-//         <Layout>
-//           <Outlet />
-//         </Layout>
-//       </AuthProvider>
-//     ),
-//     children: [
-//       { index: true, element: <Navigate to="/dashboard" replace /> },
-//       { path: 'dashboard', element: <ProtectedRoute><SalesDashboard /></ProtectedRoute> },
-//       // { path: 'deals', element: <ProtectedRoute><Deals /></ProtectedRoute> },
-//       // { path: 'customers', element: <ProtectedRoute><Customers /></ProtectedRoute> },
-//       // { path: 'orders', element: <ProtectedRoute><Orders /></ProtectedRoute> },
-//       // { path: 'settings', element: <ProtectedRoute><Settings /></ProtectedRoute> },
-//     ],
-//   },
-//   { path: '/login', element: <AuthProvider><Login /></AuthProvider> },
-//   { path: '/signup', element: <AuthProvider><Signup /></AuthProvider> },
-//   { path: '/logout', element: <AuthProvider><Logout /></AuthProvider> },
-// ]);
 const AppRoutes: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -102,6 +79,8 @@ const AppRoutes: React.FC = () => {
         <Route path="deals">
           <Route path="deals-list" element={<Deals />} />
           <Route path="create" element={<DealCreation />} />
+          <Route path="view/:id" element={<DealView />} />
+          <Route path="edit/:id" element={<DealEdit />} />
           <Route path="deals-overview" element={<DealsOverView />} />
         </Route>
         <Route path="sales">
@@ -114,6 +93,7 @@ const AppRoutes: React.FC = () => {
         </Route> */}
         {/* <Route path="settings" element={<Settings />} /> */}
       </Route>
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };
