@@ -1,30 +1,5 @@
 import { AppDispatch } from '../store';
-import { setSalesData, setLoading, setError } from '../store/slices/salesSlice';
 import axios from 'axios';
-
-export const fetchSalesData = () => async (dispatch: AppDispatch) => {
-    dispatch(setLoading(true));
-    try {
-        // Simulating API call with setTimeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Dummy data
-        const data = [
-            { id: '1', date: '2023-05-01', amount: 1000, product: 'Product A' },
-            { id: '2', date: '2023-05-02', amount: 1500, product: 'Product B' },
-            { id: '3', date: '2023-05-03', amount: 2000, product: 'Product C' },
-            { id: '4', date: '2023-05-04', amount: 2500, product: 'Product D' },
-            { id: '5', date: '2023-05-05', amount: 3000, product: 'Product E' },
-        ];
-
-        dispatch(setSalesData(data));
-    } catch (error) {
-        dispatch(setError('Failed to fetch sales data'));
-    } finally {
-        dispatch(setLoading(false));
-    }
-};
-
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
@@ -37,7 +12,7 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         // You can add authentication headers here if needed
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access-token');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }

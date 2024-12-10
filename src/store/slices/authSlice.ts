@@ -99,10 +99,10 @@ export const login = (username: string, password: string): AppThunk => async (di
     dispatch(setLoading(true));
     try {
         const response = await api.post('/auth/login', { username, password });
-        const { user, token } = response.data;
+        const { user, access_token } = response.data;
         localStorage.setItem("user", JSON.stringify(user))
-        localStorage.setItem("access-token", token)
-        dispatch(setUser({ user, token }));
+        localStorage.setItem("access-token", access_token)
+        dispatch(setUser({ user, token: access_token }));
     } catch (error) {
         dispatch(setError('Login failed'));
     } finally {

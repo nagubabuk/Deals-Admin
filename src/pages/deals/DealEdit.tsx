@@ -40,6 +40,7 @@ const DealEdit: React.FC = () => {
     const navigate = useNavigate();
     const [images, setImages] = useState<File[]>([]);
     const [existingImages, setExistingImages] = useState<any>([]);
+    const [deletedImages, setDeletedImages] = useState<string[]>([]);
     const [video, setVideo] = useState<File | null>(null);
     const [existingVideo, setExistingVideo] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
@@ -94,11 +95,11 @@ const DealEdit: React.FC = () => {
             if (video) {
                 formData.append('files', video);
             }
-
+            formData.append('deletedImages', JSON.stringify(deletedImages));
             try {
                 const response = await dealsApi.updateDeal(id!, formData);
                 console.log('Deal updated successfully:', response.data);
-                navigate(`/deals/${id}`);
+                navigate(`/deals/deals-list`);
             } catch (error) {
                 console.error('Error updating deal:', error);
                 setError('Failed to update deal. Please try again.');
@@ -154,6 +155,7 @@ const DealEdit: React.FC = () => {
         }
     };
 
+    
     const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -165,9 +167,10 @@ const DealEdit: React.FC = () => {
         setImages(prev => prev.filter((_, i) => i !== index));
     };
 
-    const removeExistingImage = (index: number) => {
+    const removeExistingImage = (publicId:string,index:number) => {
         setExistingImages((prev: any[]) => prev.filter((_, i) => i !== index));
-    };
+        setDeletedImages([...deletedImages, publicId]);
+    }
 
     if (loading) return <div className="text-center py-10">Loading...</div>;
     if (error) return <div className="text-center py-10 text-red-600">{error}</div>;
@@ -384,7 +387,7 @@ const DealEdit: React.FC = () => {
                                 <img src={image.imageUrl} alt={`Existing ${index + 1}`} className="h-24 w-24 rounded-md object-cover" />
                                 <button
                                     type="button"
-                                    onClick={() => removeExistingImage(index)}
+                                    onClick={() => removeExistingImage(image.publicId,index)}
                                     className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                 >
                                     <X size={16} />
