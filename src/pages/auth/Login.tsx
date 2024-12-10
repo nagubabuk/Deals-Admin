@@ -148,9 +148,16 @@ const Login: React.FC = () => {
             username: Yup.string().required('Required'),
             password: Yup.string().required('Required'),
         }),
-        onSubmit: async (values) => {
-            await dispatch(login(values.username, values.password));
-            navigate('/dashboard');
+        onSubmit: async (values, { setSubmitting, setErrors }) => {
+            try {
+                await dispatch(login(values.username, values.password));
+                navigate('/dashboard');  // Redirect after successful login
+            } catch (err) {
+                console.log("err", err)
+                // Handle error, e.g., invalid credentials
+                setErrors({ username: 'Invalid credentials', password: 'Invalid credentials' });
+                setSubmitting(false); // Stop the form submission progress
+            }
         },
     });
 
