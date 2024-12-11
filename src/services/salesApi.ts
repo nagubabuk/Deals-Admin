@@ -12,7 +12,7 @@ export const fetchSalesData = (filterType:string) => async (dispatch: AppDispatc
             }
        } ); // Replace with your backend API URL
         const data = response.data; // Assuming the response is the array of sales data
-
+console.log("data is", data)
         // Dispatch the sales data to the store
         dispatch(setSalesData(data));
     } catch (error) {

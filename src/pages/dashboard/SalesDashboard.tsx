@@ -159,7 +159,7 @@
 
 // export default SalesDashboard;
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { fetchSalesData } from '../../services/salesApi';
 import { RootState } from '../../store';
@@ -175,7 +175,7 @@ const SalesDashboard: React.FC = () => {
     const { data: salesData, loading, error } = useAppSelector((state: RootState) => state.sales);
 
     useEffect(() => {
-        dispatch(fetchSalesData('today'));
+        dispatch(fetchSalesData('week'));
     }, [dispatch]);
 
     if (loading) {
@@ -190,17 +190,6 @@ const SalesDashboard: React.FC = () => {
         return <div className="text-red-500">{error}</div>;
     }
 
-    const totalSales = salesData.reduce((sum, sale) => sum + sale.amount, 0);
-    const totalRevenue = totalSales * 0.2; // Assuming 20% profit margin
-    const customersOnboarded = 150; // Mock data
-    const growthRate = 15; // Mock data
-
-    const cards = [
-        { title: 'Total Revenue', value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign },
-        { title: 'Total Sales', value: `$${totalSales.toFixed(2)}`, icon: ShoppingCart },
-        { title: 'Customers Onboarded', value: customersOnboarded, icon: Users },
-        { title: 'Growth Rate', value: `${growthRate}%`, icon: TrendingUp },
-    ];
 
     return (
         <div className="bg-white shadow rounded-lg p-6">
@@ -208,15 +197,34 @@ const SalesDashboard: React.FC = () => {
             {user && <p className="mb-4 text-primary-600">Welcome, {user.username}!</p>}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {cards.map((card, index) => (
-                    <div key={index} className="bg-gray-150 p-4 rounded-lg shadow-sm h-[60px] flex items-center justify-between">
+                    <div className="bg-gray-200 p-4 rounded-lg shadow-sm h-[60px] flex items-center justify-between">
                         <div>
-                            <h3 className="text-sm font-medium text-gray-500">{card.title}</h3>
-                            <p className="text-lg font-semibold text-primary-600">{card.value}</p>
+                            <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
+                        <p className="text-lg font-semibold text-primary-600"> {salesData?.analytics?.totalRevenue}</p>
                         </div>
-                        <card.icon className="h-8 w-8 text-primary-500" />
+                        <DollarSign className="h-8 w-8 text-primary-500" />
                     </div>
-                ))}
+                <div className="bg-gray-200 p-4 rounded-lg shadow-sm h-[60px] flex items-center justify-between">
+                    <div>
+                        <h3 className="text-sm font-medium text-gray-500">Total Sales</h3>
+                        <p className="text-lg font-semibold text-primary-600">{salesData?.analytics?.totalSales}</p>
+                    </div>
+                    <ShoppingCart className="h-8 w-8 text-primary-500" />
+                </div>
+                <div className="bg-gray-200 p-4 rounded-lg shadow-sm h-[60px] flex items-center justify-between">
+                    <div>
+                        <h3 className="text-sm font-medium text-gray-500">Customers Onboarded</h3>
+                        <p className="text-lg font-semibold text-primary-600">{salesData?.analytics?.customersOnboarded}</p>
+                    </div>
+                    <Users className="h-8 w-8 text-primary-500" />
+                </div>
+                <div className="bg-gray-200 p-4 rounded-lg shadow-sm h-[60px] flex items-center justify-between">
+                    <div>
+                        <h3 className="text-sm font-medium text-gray-500">Growth Rate</h3>
+                        <p className="text-lg font-semibold text-primary-600">{salesData?.analytics?.growthRate}%</p>
+                    </div>
+                    <TrendingUp className="h-8 w-8 text-primary-500" />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -225,7 +233,7 @@ const SalesDashboard: React.FC = () => {
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
                             <Pie
-                                data={salesData}
+                                data={salesData.salesData}
                                 cx="50%"
                                 cy="50%"
                                 labelLine={false}
@@ -234,7 +242,7 @@ const SalesDashboard: React.FC = () => {
                                 dataKey="amount"
                                 label={({ customerName, percent }) => `${customerName} ${(percent * 100).toFixed(0)}%`}
                             >
-                                {salesData.map((entry, index) => (
+                                {salesData?.salesData?.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
@@ -246,7 +254,7 @@ const SalesDashboard: React.FC = () => {
                 <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2 text-primary-600">Daily Sales</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={salesData}>
+                        <BarChart data={salesData.salesData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="date" />
                             <YAxis />
@@ -269,10 +277,10 @@ const SalesDashboard: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {salesData.map((sale) => (
-                                <tr key={sale.id}>
+                            {salesData?.salesData?.map((sale) => (
+                                <tr key={sale._id}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{sale.date}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.product}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.customerName}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${sale.amount.toFixed(2)}</td>
                                 </tr>
                             ))}
@@ -280,7 +288,7 @@ const SalesDashboard: React.FC = () => {
                         <tfoot>
                             <tr>
                                 <td colSpan={2} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-600">Total Sales</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-600">${totalSales.toFixed(2)}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-600">$123</td>
                             </tr>
                         </tfoot>
                     </table>
